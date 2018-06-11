@@ -248,6 +248,8 @@ function Controller(bookID, canvasID, specifiedColors, colors, globalSettings) {
 						if ($.inArray(segment.type, _presentRegions) == -1) {
 							//TODO as Action
 							this.changeRegionSettings(segment.type, 0, -1);
+							const color = viewer.getColor(segment.type);
+							this.setRegionColor(segment.type,this.getColorID(color));
 							missingRegions.push(segment.type);
 						}
 					});
@@ -290,8 +292,9 @@ function Controller(bookID, canvasID, specifiedColors, colors, globalSettings) {
 						let segment = page.segments[segmentID];
 						if ($.inArray(segment.type, _presentRegions) == -1) {
 							//TODO as Action
+							const color = viewer.getColor(segment.type);
+							this.setRegionColor(segment.type,this.getColorID(color));
 							this.changeRegionSettings(segment.type, 0, -1);
-							missingRegions.push(segment.type);
 						}
 					});
 					let readingOrder = [];
@@ -787,14 +790,8 @@ function Controller(bookID, canvasID, specifiedColors, colors, globalSettings) {
 				}
 			}
 		});
-		// Iterate over FixedSegment-"Map" (Object in JS)
-		Object.keys(pageFixedSegments).forEach((key) => {
-			const segment = pageFixedSegments[key];
-			if (segment.type === regionType) {
-				_editor.updateSegment(segment);
-			}
-		});
 
+		viewer._specifiedColors = specifiedColors;
 		const region = _settings.regions[regionType];
 		// Iterate over all Polygons in Region
 		Object.keys(region.polygons).forEach((polygonKey) => {

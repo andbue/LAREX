@@ -7,7 +7,6 @@ class Viewer {
 		this._imageCanvas = new paper.Group();
 		this._background;
 		this._currentZoom = 1;
-		this._colors = colors;
 		this._specifiedColors = specifiedColors;
 		document.addEventListener('visibilitychange', () => {
 			if (!document.hidden) this.forceUpdate();
@@ -327,10 +326,16 @@ class Viewer {
 
 	getColor(segmentType) {
 		let color = this._specifiedColors[segmentType];
+		let freeColors = colors.slice();
+		Object.keys(this._specifiedColors).forEach(type =>
+			freeColors.splice($.inArray(this._specifiedColors[type], freeColors), 1));
 
 		if (color) {
 			return color;
+		} else if (freeColors && freeColors.length > 0) {
+			return freeColors.pop();
 		} else {
+			// Fallback generator
 			const id = this._segmenttypes[segmentType]
 			const counter = 6;
 			const modifier1 = (id + 6) % counter;
